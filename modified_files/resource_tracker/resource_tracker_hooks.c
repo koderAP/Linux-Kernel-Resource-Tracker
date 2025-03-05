@@ -11,7 +11,7 @@
 extern struct list_head monitored_list;
 extern spinlock_t monitored_lock;
 
-void update_heap_usage(pid_t pid, long byte_change)
+static void __update_heap_usage(pid_t pid, long byte_change)
 {
     struct pid_node *node;
     struct task_struct *task;
@@ -50,7 +50,7 @@ void update_heap_usage(pid_t pid, long byte_change)
     spin_unlock(&monitored_lock);
 }
 
-void update_openfile_count(pid_t pid, int change)
+static void __update_openfile_count(pid_t pid, int change)
 {
     struct pid_node *node;
     struct task_struct *task;
@@ -90,3 +90,38 @@ void update_openfile_count(pid_t pid, int change)
     spin_unlock(&monitored_lock);
 }
 
+
+void update_heap_usage(pid_t pid, long byte_change)
+{
+    struct task_struct *task;
+    rcu_read_lock();
+    task = find_task_by_vpid(pid);
+    if(task)
+        get_task_struct(task);
+    rcu_read_unlock();
+    __update_heap_usage(pid, byte_change);
+    if(task && task->group_leader && task->group_leader->pid != pid){
+        __update_heap_usage(task->group_leader->pid, byte_change);
+    }
+    if(task){
+        put_task_struct(task);
+    }
+}
+
+void update_openfile_count(pid_t pid, int change)
+{
+    struct task_struct *task;
+    rcu_read_lock();
+    task = find_task_by_vpid(pid);
+    if(task)
+        get_task_struct(task);
+    rcu_read_unlock();
+    __update_openfile_count(pid, change);
+    if(task && task->group_leader && task->group_leader->pid != pid){
+        __update_openfile_count(task->group_leader->pid, change);
+    }
+    
+    if(task){
+        put_task_struct(task);
+    }
+}
