@@ -49,24 +49,9 @@ The patch (`res_usage.patch`) is provided for both versions and has been tested 
 
 ---
 
-## Directory Structure
+## Directory Structure for modified files
 
-.
-├── res_usage.patch
-├── res_usage_6_1_6.patch
-├── report.pdf
-├── modified_files/
-│ ├── resource_tracker/
-│ │ ├── resource_tracker.c
-│ │ ├── resource_tracker_hooks.c
-│ │ ├── resource_tracker.h
-│ │ ├── Makefile
-│ │ └── Kbuild
-│ ├── modules/
-│ │ ├── cleanup_kprobe.c
-│ │ └── tracker.c
-│ └── (other modified kernel files)
-└── README.md
+<img width="565" alt="image" src="https://github.com/user-attachments/assets/94355d63-af89-4bb3-aceb-3b2b2d6edc9e" />
 
 
 
