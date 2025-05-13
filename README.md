@@ -78,6 +78,7 @@ Syscall numbers are assigned in the appropriate syscall tables for each architec
 
 Defined in `include/linux/resource_tracker.h`:
 
+```
 struct per_proc_resource {
 pid_t pid;
 unsigned long heapsize;
@@ -88,6 +89,7 @@ struct pid_node {
 struct per_proc_resource *proc_resource;
 struct list_head next_prev_list;
 };
+```
 
 
 
@@ -119,8 +121,9 @@ Each monitored process is represented as a node in a doubly-linked list, protect
 
 2. **Apply the Patch**:
 
+```
 git apply < /path/to/res_usage.patch
-
+```
 
 ---
 
@@ -128,64 +131,65 @@ git apply < /path/to/res_usage.patch
 
 1. **Configure the Kernel:**
 
+```
 cp -v /boot/config-$(uname -r) .config
 make menuconfig # Or 'make oldconfig'
-
+```
 
 2. **Build the Kernel:**
-
+```
 make -j$(nproc)
 sudo make modules_install install
-
+```
 
 3. **Update Bootloader and Reboot:**
-
+```
 sudo update-grub
 sudo reboot
-
+```
 
 4. **Verify Kernel Version:**
-
+```
 uname -r
-
+```
 
 ---
 
 ## Usage Instructions
 
 - **Register a Process:**
-
+```
 syscall(SYS_register, pid);
-
+```
 
 - **Fetch Resource Usage:**
-
+```
 struct per_proc_resource stats;
 syscall(SYS_fetch, &stats, pid);
-
+```
 
 - **Deregister a Process:**
-
+```
 syscall(SYS_deregister, pid);
-
+```
 
 - **Set Quotas:**
-
+```
 syscall(SYS_resource_cap, pid, heap_quota_MB, file_quota);
-
+```
 
 
 - **Reset Quotas:**
-
+```
 syscall(SYS_resource_reset, pid);
-
+```
 
 
 - **View Monitored Processes:**
-
+```
 cat /proc/tracker_status
 
-
+```
 
 ---
 
